@@ -1,0 +1,7 @@
+"loups-garous"
+{
+    "base"              "base"
+    "title"             "Loups Garous"
+    "maps"              ""
+    "menusystem"        "1"
+}
