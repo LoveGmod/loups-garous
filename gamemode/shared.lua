@@ -8,3 +8,18 @@ DeriveGamemode("sandbox")
 function GM:Initialize()
     
 end
+
+function GM:HUDShouldDraw(name)
+    local hudToHide = {
+        ["CHudHealth"] = true,
+        ["CHudBattery"] = true,
+        ["CHudAmmo"] = true,
+        ["CHudSecondaryAmmo"] = true,
+    }
+
+    if hudToHide[name] then
+        return false
+    end
+
+    return true
+end
