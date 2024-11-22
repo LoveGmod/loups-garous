@@ -4,9 +4,30 @@ AddCSLuaFile("shared.lua")
 include("shared.lua")
 include("commands.lua")
 
---GM.game.phase = PHASE.LOBBY
+local GM = GM
 
 function GM:PlayerSpawn(player, transition)
+    local villagerModels = {
+        "models/player/group01/male_01.mdl",
+        "models/player/group01/male_02.mdl",
+        "models/player/group01/male_03.mdl",
+        "models/player/group01/male_04.mdl",
+        "models/player/group01/male_05.mdl",
+        "models/player/group01/male_06.mdl",
+        "models/player/group01/male_07.mdl",
+        "models/player/group01/male_08.mdl",
+        "models/player/group01/male_09.mdl",
+        "models/player/group01/female_01.mdl",
+        "models/player/group01/female_02.mdl",
+        "models/player/group01/female_03.mdl",
+        "models/player/group01/female_04.mdl",
+        "models/player/group01/female_05.mdl",
+        "models/player/group01/female_06.mdl",
+    }
+
+    local randomModel = table.Random(villagerModels)
+
+    player:SetModel(randomModel)
     player:SetupHands()
     player:Give("weapon_physgun")
 end
@@ -50,7 +71,7 @@ end
 
 local function StartGame()
     local availableSeatsIds = {}
-    local playersSeats = {}
+    GM.PlayersSeats = {}
 
     for i, seat in ipairs(ents.FindByModel("models/nova/airboat_seat.mdl")) do
         table.insert(availableSeatsIds, seat:EntIndex())
@@ -60,11 +81,11 @@ local function StartGame()
         local seatId = table.remove(availableSeatsIds, math.random(#availableSeatsIds))
         local seat = Entity(seatId)
 
-        playersSeats[player] = seat
+        GM.PlayersSeats[player] = seat
     end
 
     local availableHousesIds = {}
-    local playersHouses = {}
+    GM.PlayersHouses = {}
 
     for i, house in ipairs(ents.FindByModel("models/props_lab/huladoll.mdl")) do
         table.insert(availableHousesIds, house:EntIndex())
@@ -74,17 +95,28 @@ local function StartGame()
         local houseId = table.remove(availableHousesIds, math.random(#availableHousesIds))
         local house = Entity(houseId)
 
-        playersHouses[player] = house
+        GM.PlayersHouses[player] = house
     end
 
-    PrintTable(playersSeats)
-    PrintTable(playersHouses)
+    GM:SetPhase(GM.PHASE.DAY)
 end
 
 function GM:SetPhase(phase)
-    
+    self.CurrentPhase = phase
+
+    if phase == self.PHASE.DAY then
+        PrintTable(GM.PlayersSeats)
+        for player, seat in pairs(GM.PlayersSeats) do
+            player:ExitVehicle()
+            player:SetPos(seat:GetPos() + Vector(0, 0, 30))
+            player:EnterVehicle(seat)
+        end
+    end
 end
 
 concommand.Add("lg_start_game", StartGame)
 hook.Add("InitPostEntity", "LG_LoadSeatsAndHouses", LoadSeatsAndHouses)
 hook.Add("PostCleanupMap", "LG_RespawnSeatsAndHouses", LoadSeatsAndHouses)
+hook.Add("CanExitVehicle", "LG_CanExitVehicle", function()
+    return false
+end)

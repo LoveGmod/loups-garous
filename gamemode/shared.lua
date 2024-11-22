@@ -1,3 +1,5 @@
+local GM = GM
+
 GM.Name = "Loups Garous"
 GM.Author = "Love Gmod"
 GM.Email = "N/A"
@@ -36,11 +38,12 @@ GM.PHASE = {
     LOBBY = 0,
     DAY = 1,
     NIGHT = 2,
+    NIGHT2 = 3,
 }
 
 function GM:CreateTeams()
-    team.SetUp(TEAM.SPECTATOR, "Spectateur")
-    team.SetUp(TEAM.DEAD, "Mort")
-    team.SetUp(TEAM.VILLAGER, "Villageois")
-    team.SetUp(TEAM.WEREWOLF, "Loup Garou")
+    team.SetUp(GM.TEAM.SPECTATOR, "Spectateur")
+    team.SetUp(GM.TEAM.DEAD, "Mort")
+    team.SetUp(GM.TEAM.VILLAGER, "Villageois")
+    team.SetUp(GM.TEAM.WEREWOLF, "Loup Garou")
 end
