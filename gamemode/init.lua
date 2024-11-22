@@ -38,11 +38,12 @@ local function LoadSeatsAndHouses()
     local data = util.JSONToTable(file.Read("loups-garous/"..game.GetMap().."_data.txt", "DATA"))
     if not data then return end
 
-    for i, pos in ipairs(data.seats or {}) do
+    for i, info in ipairs(data.seats or {}) do
         local seat = ents.Create("prop_vehicle_prisoner_pod")
         if IsValid(seat) then
             seat:SetModel("models/nova/airboat_seat.mdl")
-            seat:SetPos(pos)
+            seat:SetPos(Vector(info[1], info[2], info[3]))
+            seat:SetAngles(Angle(info[4], info[5], info[6]))
             seat:Spawn()
 
             seat:SetRenderMode(RENDERMODE_TRANSALPHA)
@@ -52,11 +53,12 @@ local function LoadSeatsAndHouses()
         end
     end
 
-    for i, pos in ipairs(data.houses or {}) do
+    for i, info in ipairs(data.houses or {}) do
         local house = ents.Create("prop_physics")
         if IsValid(house) then
             house:SetModel("models/props_lab/huladoll.mdl")
-            house:SetPos(pos)
+            house:SetPos(Vector(info[1], info[2], info[3]))
+            house:SetAngles(Angle(info[4], info[5], info[6]))
             house:Spawn()
 
             house:SetRenderMode(RENDERMODE_TRANSALPHA)
@@ -95,7 +97,9 @@ local function StartGame()
         local houseId = table.remove(availableHousesIds, math.random(#availableHousesIds))
         local house = Entity(houseId)
 
-        GM.PlayersHouses[player] = house
+        if Team(player.Team()) != GM.TEAM.WEREWOLF then
+            GM.PlayersHouses[player] = house
+        end
     end
 
     GM:SetPhase(GM.PHASE.DAY)

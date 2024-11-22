@@ -3,11 +3,11 @@ local function SaveSeatsAndHouses(player, args)
     local houses = {}
 
     for i, seat in ipairs(ents.FindByModel("models/nova/airboat_seat.mdl")) do
-        table.insert(seats, seat:GetPos())
+        table.insert(seats, {seat:GetPos().x, seat:GetPos().y, seat:GetPos().z, seat:GetAngles().p, seat:GetAngles().y, seat:GetAngles().r})
     end
 
     for i, house in ipairs(ents.FindByModel("models/props_lab/huladoll.mdl")) do
-        table.insert(houses, house:GetPos())
+        table.insert(houses, {house:GetPos().x, house:GetPos().y, house:GetPos().z, house:GetAngles().p, house:GetAngles().y, house:GetAngles().r})
     end
 
     if not file.Exists("loups-garous", "DATA") then
